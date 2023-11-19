@@ -1,4 +1,7 @@
 package com.sparta.todolist.repository;
 
-public class TodoCardCommentRepository {
+import com.sparta.todolist.entity.TodoCardComment;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TodoCardCommentRepository extends JpaRepository<TodoCardComment, Long> {
 }
