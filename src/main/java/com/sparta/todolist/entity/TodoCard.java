@@ -1,5 +1,6 @@
 package com.sparta.todolist.entity;
 
+import com.sparta.todolist.dto.TodoCardRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +19,6 @@ public class TodoCard extends Timestamped {
 
     @Column(name="title")
     private String title;
-    @Column(name="userName")
-    private String userName;
     @Column(name="content",length = 5000)
     private String content;
     @ManyToOne
@@ -30,4 +29,12 @@ public class TodoCard extends Timestamped {
 
     @OneToMany(mappedBy = "todoCard")
     private List<TodoCardComment> todoCardCommentList = new ArrayList<>();
+
+    public TodoCard(TodoCardRequestDto requestDto, User user) {
+        this.title= requestDto.getTitle();
+        this.content= requestDto.getContent();
+        this.user=user;
+    }
+
+
 }
