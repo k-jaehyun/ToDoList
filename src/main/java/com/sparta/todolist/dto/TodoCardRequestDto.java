@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TodoCardRequestDto {
     private String title;
-    private String userName;
     private String content;
 }

@@ -19,15 +19,15 @@ public class TodoCardResponseDto {
     private Long id;
     private String title;
     private String content;
-    private User user;
+    private String username;
 
     private List<TodoCardComment> todoCardCommentList = new ArrayList<>();
 
-    public TodoCardResponseDto(TodoCard todoCard) {
+    public TodoCardResponseDto(TodoCard todoCard, String username) {
         this.id= todoCard.getId();
         this.title=todoCard.getTitle();
-        this.content= todoCard.getContent();
-        this.user=todoCard.getUser();
+        this.content=todoCard.getContent();
+        this.username=username;
     }
 
 
