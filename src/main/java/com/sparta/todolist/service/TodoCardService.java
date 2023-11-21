@@ -11,6 +11,7 @@ import com.sparta.todolist.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -47,5 +48,22 @@ public class TodoCardService {
 
     public List<TodoCardListResponseDto> getTodoCardList() {
         return todoCardRepository.findAllByOrderByCreatedAtDesc().stream().map(TodoCardListResponseDto::new).toList();
+    }
+
+    @Transactional
+    public String updateTodoCard(Long cardid, TodoCardRequestDto requestDto, String tokenValue) {
+        String token = jwtUtil.substringToken(tokenValue);
+        Claims info = jwtUtil.getUserInfoFromToken(token);
+        User user = userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
+                new NullPointerException("Not Found User"));
+
+        TodoCard todoCard = todoCardRepository.findById(cardid).orElseThrow(()->new IllegalArgumentException("존재하지 않는 cardid"));
+        if (!todoCard.getUser().getUsername().equals(user.getUsername())) {
+            return "해당 사용자만 수정 할 수 있습니다.";
+        }
+
+        todoCard.update(requestDto);
+
+        return "수정 성공";
     }
 }

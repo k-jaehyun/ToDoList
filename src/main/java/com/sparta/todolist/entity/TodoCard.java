@@ -37,4 +37,8 @@ public class TodoCard extends Timestamped {
     }
 
 
+    public void update(TodoCardRequestDto requestDto) {
+        this.title= requestDto.getTitle();
+        this.content= requestDto.getContent();
+    }
 }
