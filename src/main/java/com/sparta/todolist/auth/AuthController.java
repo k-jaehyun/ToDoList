@@ -1,11 +1,14 @@
 package com.sparta.todolist.auth;
 
 import com.sparta.todolist.jwt.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.apache.el.stream.StreamELResolverImpl;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,4 +64,20 @@ public class AuthController {
         jwtUtil.addJwtToCookie(token, res);
         return "createJwt : " + token;
     }
+
+    @GetMapping("/get-jwt")
+    public String getJwt(@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
+        String token = jwtUtil.substringToken(tokenValue);
+
+        if(!jwtUtil.validateToken(token)) {
+            throw new IllegalArgumentException("토큰 에러");
+        }
+
+        Claims info = jwtUtil.getUserInfoFromToken(token);
+
+        String username = info.getSubject();
+
+        return "Jwt username : " + username;
+    }
+
 }
