@@ -1,7 +1,9 @@
 package com.sparta.todolist.controller;
 
+import com.sparta.todolist.dto.LoginRequestDto;
 import com.sparta.todolist.dto.SignupRequestDto;
 import com.sparta.todolist.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,7 @@ public class UserController {
 
     @PostMapping("/user/signup")
     public String signup(@RequestBody SignupRequestDto requestDto) {
+        System.out.println("sugnup 들어옴");
 
         userService.signup(requestDto);
 
@@ -21,9 +24,15 @@ public class UserController {
         return "성공?";
     }
 
-    @GetMapping("/user/login")
-    public String loginPage() {
-        return "로그인페이지 반환";
+    @PostMapping("/user/login")
+    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse res) {
+        try {
+            userService.login(requestDto, res);
+        } catch (Exception e) {
+            return "로그인실패";
+        }
+
+        return "로그인성공";
     }
 
 
