@@ -52,18 +52,40 @@ public class TodoCardService {
 
     @Transactional
     public String updateTodoCard(Long cardid, TodoCardRequestDto requestDto, String tokenValue) {
-        String token = jwtUtil.substringToken(tokenValue);
-        Claims info = jwtUtil.getUserInfoFromToken(token);
-        User user = userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
-                new NullPointerException("Not Found User"));
+        User user = findUserByToken(tokenValue);
 
-        TodoCard todoCard = todoCardRepository.findById(cardid).orElseThrow(()->new IllegalArgumentException("존재하지 않는 cardid"));
-        if (!todoCard.getUser().getUsername().equals(user.getUsername())) {
-            return "해당 사용자만 수정 할 수 있습니다.";
-        }
+        TodoCard todoCard = verifyUser(user,cardid);
 
         todoCard.update(requestDto);
 
         return "수정 성공";
+    }
+
+    @Transactional
+    public String updateIsDone(Long cardid,Boolean isdone , String tokenValue) {
+        User user = findUserByToken(tokenValue);
+
+        TodoCard todoCard = verifyUser(user,cardid);
+
+        TodoCardResponseDto todoCardResponseDto = new TodoCardResponseDto(isdone);
+
+        todoCard.update(todoCardResponseDto);
+
+        return "할일 완료";
+    }
+
+    public User findUserByToken(String tokenValue) {
+        String token = jwtUtil.substringToken(tokenValue);
+        Claims info = jwtUtil.getUserInfoFromToken(token);
+        return userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
+                new NullPointerException("Not Found User"));
+    }
+
+    public TodoCard verifyUser(User user, Long cardid) {
+        TodoCard todoCard = todoCardRepository.findById(cardid).orElseThrow(()->new IllegalArgumentException("존재하지 않는 cardid"));
+        if (!todoCard.getUser().getUsername().equals(user.getUsername())) {
+            throw new IllegalArgumentException("해당 사용자가 아님.");
+        }
+        return todoCard;
     }
 }

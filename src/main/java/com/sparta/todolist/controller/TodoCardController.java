@@ -37,4 +37,9 @@ public class TodoCardController {
         return todoCardService.updateTodoCard(cardid, requestDto, tokenValue);
     }
 
+    @PatchMapping("/cards/{cardid}/{isdone}")
+    public String completeTodoCard(@PathVariable Long cardid, @PathVariable Boolean isdone, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
+        return todoCardService.updateIsDone(cardid, isdone, tokenValue);
+    }
+
 }

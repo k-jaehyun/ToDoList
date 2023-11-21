@@ -22,6 +22,7 @@ public class TodoCardResponseDto {
     private String username;
     private LocalDateTime createdAt;
     private LocalDateTime modifiredAt;
+    private Boolean isdone;
 
     private List<TodoCardComment> todoCardCommentList = new ArrayList<>();
 
@@ -41,6 +42,10 @@ public class TodoCardResponseDto {
         this.username=todoCard.getUser().getUsername();
         this.createdAt=todoCard.getCreatedAt();
         this.modifiredAt=todoCard.getModifiedAt();
+    }
+
+    public TodoCardResponseDto(Boolean isdone) {
+        this.isdone=isdone;
     }
 
 
