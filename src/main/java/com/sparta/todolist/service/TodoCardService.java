@@ -30,4 +30,16 @@ public class TodoCardService {
 
         return new TodoCardResponseDto(todoCard, user.getUsername());
     }
+
+    public TodoCardResponseDto getTodoCard(Long id) {
+        System.out.println("getTodoCard");
+        return new TodoCardResponseDto(findCard(id));
+    }
+
+    private TodoCard findCard(Long id) {
+        System.out.println("findCard");
+        return todoCardRepository.findById(id).orElseThrow(()->new IllegalArgumentException("선택한 할일카드가 존재하지 않습니다."));
+    }
+
+
 }

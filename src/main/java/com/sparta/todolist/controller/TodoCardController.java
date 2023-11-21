@@ -14,9 +14,14 @@ public class TodoCardController {
 
     private final TodoCardService todoCardService;
 
-    @PostMapping("/post/card")
+    @PostMapping("/cards/post")
     public TodoCardResponseDto createTodoCard(@RequestBody TodoCardRequestDto requestDto, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String cookeValue) {
         return todoCardService.createTodoCard(requestDto,cookeValue);
+    }
+
+    @GetMapping("/auth/get-card/{todoID}")
+    public TodoCardResponseDto getTodoCard(@PathVariable Long todoID) {
+        return todoCardService.getTodoCard(todoID);
     }
 
 }

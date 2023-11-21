@@ -10,6 +10,7 @@ import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,8 @@ public class TodoCardResponseDto {
     private String title;
     private String content;
     private String username;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiredAt;
 
     private List<TodoCardComment> todoCardCommentList = new ArrayList<>();
 
@@ -27,7 +30,17 @@ public class TodoCardResponseDto {
         this.id= todoCard.getId();
         this.title=todoCard.getTitle();
         this.content=todoCard.getContent();
+        this.createdAt=todoCard.getCreatedAt();
         this.username=username;
+    }
+
+    public TodoCardResponseDto(TodoCard todoCard) {
+        this.id = todoCard.getId();
+        this.title=todoCard.getTitle();
+        this.content=todoCard.getContent();
+        this.username=todoCard.getUser().getUsername();
+        this.createdAt=todoCard.getCreatedAt();
+        this.modifiredAt=todoCard.getModifiedAt();
     }
 
 
