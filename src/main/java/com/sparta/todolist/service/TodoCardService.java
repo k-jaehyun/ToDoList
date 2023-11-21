@@ -15,8 +15,8 @@ public class TodoCardService {
     private final TodoCardRepository todoCardRepository;
 
 
-    public TodoCardResponseDto createTodoCard(TodoCardRequestDto requestDto, User user) {
-        TodoCard todoCard = todoCardRepository.save((new TodoCard(requestDto,user)));
+    public TodoCardResponseDto createTodoCard(TodoCardRequestDto requestDto) {
+        TodoCard todoCard = todoCardRepository.save((new TodoCard(requestDto)));
         return new TodoCardResponseDto(todoCard);
     }
 }

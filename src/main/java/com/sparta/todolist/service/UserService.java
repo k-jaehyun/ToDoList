@@ -2,7 +2,6 @@ package com.sparta.todolist.service;
 
 import com.sparta.todolist.dto.SignupRequestDto;
 import com.sparta.todolist.entity.User;
-import com.sparta.todolist.entity.UserRoleEnum;
 import com.sparta.todolist.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,25 +30,8 @@ public class UserService {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
 
-        // email 중복확인
-        String email = requestDto.getEmail();
-        Optional<User> checkEmail = userRepository.findByEmail(email);
-        if (checkEmail.isPresent()) {
-            throw new IllegalArgumentException("중복된 Email 입니다.");
-        }
-
-        // 사용자 ROLE 확인
-        UserRoleEnum role = UserRoleEnum.USER;
-        if (requestDto.isAdmin()) {
-            if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
-                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
-            }
-            role = UserRoleEnum.ADMIN;
-        }
-
-
         // 사용자 등록
-        User user = new User(username, password, email , role);
+        User user = new User(username, password);
         userRepository.save(user);
     }
 }

@@ -30,7 +30,7 @@ public class TodoCard extends Timestamped {
     @OneToMany(mappedBy = "todoCard")
     private List<TodoCardComment> todoCardCommentList = new ArrayList<>();
 
-    public TodoCard(TodoCardRequestDto requestDto, User user) {
+    public TodoCard(TodoCardRequestDto requestDto) {
         this.title= requestDto.getTitle();
         this.content= requestDto.getContent();
         this.user=user;
