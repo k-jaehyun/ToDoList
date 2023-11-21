@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Base64;
@@ -83,6 +85,22 @@ public class JwtUtil {
 
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+    public String getTokenFromRequest(HttpServletRequest req) {
+        Cookie[] cookies = req.getCookies();   //여러개 담겨있는 쿠키들을 배열로 가져옴
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
+                    try {
+                        return URLDecoder.decode(cookie.getValue(), "UTF-8"); // Encode 되어 넘어간 Value를 다시 Decode 해줘야함
+                    } catch (UnsupportedEncodingException e) {
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
 
