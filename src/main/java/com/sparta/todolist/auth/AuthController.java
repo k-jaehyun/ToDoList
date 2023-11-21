@@ -1,9 +1,11 @@
 package com.sparta.todolist.auth;
 
+import com.sparta.todolist.jwt.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,10 +14,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class AuthController {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    private final JwtUtil jwtUtil;
 
 
     @GetMapping("/create-cookie")
@@ -48,5 +52,13 @@ public class AuthController {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    @GetMapping("/create-jwt")
+    public String createJwt(HttpServletResponse res) {
+        String token = jwtUtil.createToken("유저 이름");
+
+        jwtUtil.addJwtToCookie(token, res);
+        return "createJwt : " + token;
     }
 }
