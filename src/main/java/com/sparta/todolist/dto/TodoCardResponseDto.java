@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
 public class TodoCardResponseDto {
     private Long id;
     private String title;
@@ -25,6 +24,7 @@ public class TodoCardResponseDto {
     private LocalDateTime modifiredAt;
 
     private List<TodoCardComment> todoCardCommentList = new ArrayList<>();
+
 
     public TodoCardResponseDto(TodoCard todoCard, String username) {
         this.id= todoCard.getId();

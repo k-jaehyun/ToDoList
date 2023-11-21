@@ -1,11 +1,14 @@
 package com.sparta.todolist.controller;
 
+import com.sparta.todolist.dto.TodoCardListResponseDto;
 import com.sparta.todolist.dto.TodoCardRequestDto;
 import com.sparta.todolist.dto.TodoCardResponseDto;
 import com.sparta.todolist.jwt.JwtUtil;
 import com.sparta.todolist.service.TodoCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +25,11 @@ public class TodoCardController {
     @GetMapping("/auth/get-card/{todoID}")
     public TodoCardResponseDto getTodoCard(@PathVariable Long todoID) {
         return todoCardService.getTodoCard(todoID);
+    }
+
+    @GetMapping("/auth/get-cardlist")
+    public List<TodoCardListResponseDto> getTodoCardList() {
+        return todoCardService.getTodoCardList();
     }
 
 }

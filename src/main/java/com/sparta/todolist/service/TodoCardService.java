@@ -1,5 +1,6 @@
 package com.sparta.todolist.service;
 
+import com.sparta.todolist.dto.TodoCardListResponseDto;
 import com.sparta.todolist.dto.TodoCardRequestDto;
 import com.sparta.todolist.dto.TodoCardResponseDto;
 import com.sparta.todolist.entity.TodoCard;
@@ -10,6 +11,8 @@ import com.sparta.todolist.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -42,4 +45,7 @@ public class TodoCardService {
     }
 
 
+    public List<TodoCardListResponseDto> getTodoCardList() {
+        return todoCardRepository.findAllByOrderByCreatedAtDesc().stream().map(TodoCardListResponseDto::new).toList();
+    }
 }
