@@ -1,7 +1,9 @@
 package com.sparta.todolist.auth;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,15 @@ public class AuthController {
         addCookie("쿠키 밸류",res);
 
         return "createCookie";
+    }
+
+    @GetMapping("/create-session")
+    public String createSession(HttpServletRequest req) {
+        HttpSession session = req.getSession(true);
+
+        session.setAttribute(AUTHORIZATION_HEADER,"session value");
+
+        return "createSession";
     }
 
     public static void addCookie(String cookieValue, HttpServletResponse res) {
