@@ -26,4 +26,8 @@ public class TodoCardComment {
         this.todoCard = todoCard;
         this.comment = comment;
     }
+
+    public void update(Comment comment) {
+        this.comment=comment;
+    }
 }

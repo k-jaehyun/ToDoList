@@ -34,4 +34,8 @@ public class Comment {
         this.content= requestDto.getContent();
         this.todoCard = todoCard;
     }
+
+    public void update(CommentRequestDto requestDto) {
+        this.content= requestDto.getContent();
+    }
 }

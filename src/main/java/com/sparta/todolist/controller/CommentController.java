@@ -26,4 +26,9 @@ public class CommentController {
     public List<CommentResponsDto> getCommentList(@PathVariable Long cardId) {
         return commentService.getCommentList(cardId);
     }
+
+    @PatchMapping("/comments/{cardId}/{commentId}")
+    public CommentResponsDto updateComment(@RequestBody CommentRequestDto requestDto, @PathVariable Long cardId, @PathVariable Long commentId, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
+        return commentService.updateComment(cardId,commentId,tokenValue,requestDto);
+    }
 }

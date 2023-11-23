@@ -14,6 +14,7 @@ import com.sparta.todolist.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,10 +28,7 @@ public class CommentService {
     private final TodoCardRepository todoCardRepository;
     private final TodoCardCommentRepository todoCardCommentRepository;
     public CommentResponsDto createComment(Long cardId, CommentRequestDto requestDto, String tokenValue) {
-        String token = jwtUtil.substringToken(tokenValue);
-        Claims info = jwtUtil.getUserInfoFromToken(token);
-        User user = userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
-                new NullPointerException("Not Found User"));
+        User user = validateToken(tokenValue);
 
         TodoCard todoCard = validateCardId(cardId);
 
@@ -45,7 +43,27 @@ public class CommentService {
         return commentRepository.findByTodoCardCommentList_TodoCardId(cardId).stream().map(CommentResponsDto::new).toList();
     }
 
+    @Transactional
+    public CommentResponsDto updateComment(Long cardId, Long commentId, String tokenValue, CommentRequestDto requestDto) {
+        validateToken(tokenValue);
+        TodoCard todoCard = validateCardId(cardId);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+        TodoCardComment todoCardComment = todoCardCommentRepository.findByTodoCardIdAndCommentId(todoCard.getId(),comment.getId());
+
+        comment.update(requestDto);
+        todoCardComment.update(comment);
+
+        return new CommentResponsDto(comment);
+    }
+
     private TodoCard validateCardId(Long cardId) {
         return todoCardRepository.findById(cardId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 cardId입니다."));
+    }
+
+    private User validateToken(String tokenValue) {
+        String token = jwtUtil.substringToken(tokenValue);
+        Claims info = jwtUtil.getUserInfoFromToken(token);
+        return userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
+                new NullPointerException("Not Found User"));
     }
 }
