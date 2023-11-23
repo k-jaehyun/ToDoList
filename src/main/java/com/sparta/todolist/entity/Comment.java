@@ -1,5 +1,6 @@
 package com.sparta.todolist.entity;
 
+import com.sparta.todolist.dto.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,4 +29,9 @@ public class Comment {
     private List<TodoCardComment> todoCardCommentList = new ArrayList<>();
 
 
+    public Comment(CommentRequestDto requestDto, User user, TodoCard todoCard) {
+        this.userName=user.getUsername();
+        this.content= requestDto.getContent();
+        this.todoCard = todoCard;
+    }
 }
