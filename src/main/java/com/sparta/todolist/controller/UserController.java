@@ -24,16 +24,16 @@ public class UserController {
         return "성공?";
     }
 
-    @PostMapping("/user/login")
-    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse res) {
-        try {
-            userService.login(requestDto, res);
-        } catch (Exception e) {
-            return "로그인실패";
-        }
-
-        return "로그인성공";
-    }
+//    @PostMapping("/user/login")
+//    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse res) {
+//        try {
+//            userService.login(requestDto, res);
+//        } catch (Exception e) {
+//            return "로그인실패";
+//        }
+//
+//        return "로그인성공";
+//    }
 
 
 

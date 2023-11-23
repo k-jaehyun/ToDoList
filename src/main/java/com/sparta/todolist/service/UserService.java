@@ -39,18 +39,18 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void login(LoginRequestDto requestDto, HttpServletResponse res) {
-        String username = requestDto.getUsername();
-        String password = requestDto.getPassword();
-
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("등록된 username없음"));
-
-        if (!passwordEncoder.matches(password,user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않음");
-        }
-
-        String token = jwtUtil.createToken(user.getUsername());
-        jwtUtil.addJwtToCookie(token,res);
-
-    }
+//    public void login(LoginRequestDto requestDto, HttpServletResponse res) {
+//        String username = requestDto.getUsername();
+//        String password = requestDto.getPassword();
+//
+//        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("등록된 username없음"));
+//
+//        if (!passwordEncoder.matches(password,user.getPassword())) {
+//            throw new IllegalArgumentException("비밀번호가 일치하지 않음");
+//        }
+//
+//        String token = jwtUtil.createToken(user.getUsername());
+//        jwtUtil.addJwtToCookie(token,res);
+//
+//    }
 }
