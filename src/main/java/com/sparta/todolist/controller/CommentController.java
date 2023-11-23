@@ -31,4 +31,10 @@ public class CommentController {
     public CommentResponsDto updateComment(@RequestBody CommentRequestDto requestDto, @PathVariable Long cardId, @PathVariable Long commentId, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
         return commentService.updateComment(cardId,commentId,tokenValue,requestDto);
     }
+
+    @DeleteMapping("comments/{cardId}/{commentId}")
+    public String deleteComment(@PathVariable Long cardId, @PathVariable Long commentId, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue){
+        commentService.deleteComment(cardId,commentId,tokenValue);
+        return "삭제 성공";
+    }
 }

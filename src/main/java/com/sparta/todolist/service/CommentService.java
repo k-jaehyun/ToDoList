@@ -45,8 +45,11 @@ public class CommentService {
 
     @Transactional
     public CommentResponsDto updateComment(Long cardId, Long commentId, String tokenValue, CommentRequestDto requestDto) {
-        validateToken(tokenValue);
+        User user = validateToken(tokenValue);
         TodoCard todoCard = validateCardId(cardId);
+        if(!user.getUsername().equals(todoCard.getUser().getUsername())) {
+            throw new IllegalArgumentException("해당 유저가 아닙니다.");
+        }
         Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 댓글입니다."));
         TodoCardComment todoCardComment = todoCardCommentRepository.findByTodoCardIdAndCommentId(todoCard.getId(),comment.getId());
 
@@ -54,6 +57,20 @@ public class CommentService {
         todoCardComment.update(comment);
 
         return new CommentResponsDto(comment);
+    }
+
+
+    public void deleteComment(Long cardId, Long commentId, String tokenValue) {
+        User user = validateToken(tokenValue);
+        TodoCard todoCard = validateCardId(cardId);
+        if(!user.getUsername().equals(todoCard.getUser().getUsername())) {
+            throw new IllegalArgumentException("해당 유저가 아닙니다.");
+        }
+        Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new IllegalArgumentException("commentId를 찾을 수 없습니다."));
+        TodoCardComment todoCardComment = todoCardCommentRepository.findByTodoCardIdAndCommentId(todoCard.getId(),comment.getId());
+
+        todoCardCommentRepository.delete(todoCardComment);
+        commentRepository.delete(comment);
     }
 
     private TodoCard validateCardId(Long cardId) {
