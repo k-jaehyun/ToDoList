@@ -1,6 +1,5 @@
 package com.sparta.todolist.jwt;
 
-import com.sparta.todolist.jwt.JwtUtil;
 import com.sparta.todolist.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
