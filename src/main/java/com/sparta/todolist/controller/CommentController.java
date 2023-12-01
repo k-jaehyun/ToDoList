@@ -1,6 +1,7 @@
 package com.sparta.todolist.controller;
 
 import com.sparta.todolist.dto.CommentRequestDto;
+import com.sparta.todolist.dto.CommentResponseDto;
 import com.sparta.todolist.dto.TodoCardResponseDto;
 import com.sparta.todolist.dto.TodoCardWithCommentsResponseDto;
 import com.sparta.todolist.jwt.JwtUtil;
@@ -22,10 +23,10 @@ public class CommentController {
         return commentService.createComment(cardId,requestDto,tokenValue);
     }
 
-//    @GetMapping("/auth/comments/{cardId}")
-//    public List<CommentResponsDto> getCommentList(@PathVariable Long cardId) {
-//        return commentService.getCommentList(cardId);
-//    }
+    @GetMapping("/{cardId}")
+    public List<CommentResponseDto> getCommentList(@PathVariable Long cardId) {
+        return commentService.getCommentList(cardId);
+    }
 //
 //    @PatchMapping("/comments/{cardId}/{commentId}")
 //    public CommentResponsDto updateComment(@RequestBody CommentRequestDto requestDto, @PathVariable Long cardId, @PathVariable Long commentId, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {

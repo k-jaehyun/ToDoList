@@ -2,7 +2,6 @@ package com.sparta.todolist.service;
 
 import com.sparta.todolist.dto.CommentRequestDto;
 import com.sparta.todolist.dto.CommentResponseDto;
-import com.sparta.todolist.dto.TodoCardResponseDto;
 import com.sparta.todolist.dto.TodoCardWithCommentsResponseDto;
 import com.sparta.todolist.entity.Comment;
 import com.sparta.todolist.entity.TodoCard;
@@ -14,7 +13,6 @@ import com.sparta.todolist.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,12 +37,13 @@ public class CommentService {
 
         return new TodoCardWithCommentsResponseDto(comment.getTodoCard(), commentResponseDtoList);
     }
-//
-//    public List<CommentResponsDto> getCommentList(Long cardId) {
-//        validateCardId(cardId);
-//        return commentRepository.findByTodoCardCommentList_TodoCardId(cardId).stream().map(CommentResponsDto::new).toList();
-//    }
-//
+
+    public List<CommentResponseDto> getCommentList(Long cardId) {
+        validateCardId(cardId);
+
+        return commentRepository.findAllByTodoCardId(cardId).stream().map(CommentResponseDto::new).toList();
+    }
+
 //    @Transactional
 //    public CommentResponsDto updateComment(Long cardId, Long commentId, String tokenValue, CommentRequestDto requestDto) {
 //        User user = validateToken(tokenValue);
