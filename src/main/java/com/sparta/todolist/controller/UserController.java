@@ -43,16 +43,16 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(new CommonResponseDto("회원가입 성공",HttpStatus.OK.value()));
     }
 
-//    @PostMapping("/user/login")
-//    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse res) {
-//        try {
-//            userService.login(requestDto, res);
-//        } catch (Exception e) {
-//            return "로그인실패";
-//        }
-//
-//        return "로그인성공";
-//    }
+    @PostMapping("/users/login")
+    public ResponseEntity<CommonResponseDto> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse res) {
+        try {
+            userService.login(requestDto, res);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new CommonResponseDto(e.getMessage(),HttpStatus.BAD_REQUEST.value()));
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED.value()).body(new CommonResponseDto("로그인 성공",HttpStatus.OK.value()));
+    }
 
 
 
