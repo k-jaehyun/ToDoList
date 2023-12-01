@@ -32,7 +32,10 @@ public class TodoCardResponseDto {
         this.title=todoCard.getTitle();
         this.content=todoCard.getContent();
         this.createdAt=todoCard.getCreatedAt();
+        this.modifiredAt=todoCard.getModifiedAt();
         this.username=username;
+        this.isdone=todoCard.getIsdone();
+        this.commentList=todoCard.getCommentList();
     }
 
     public TodoCardResponseDto(TodoCard todoCard) {
@@ -42,6 +45,8 @@ public class TodoCardResponseDto {
         this.username=todoCard.getUser().getUsername();
         this.createdAt=todoCard.getCreatedAt();
         this.modifiredAt=todoCard.getModifiedAt();
+        this.isdone=todoCard.getIsdone();
+        this.commentList=todoCard.getCommentList();
     }
 
     public TodoCardResponseDto(Boolean isdone) {

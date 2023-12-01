@@ -12,33 +12,33 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/cards")
 public class TodoCardController {
 
     private final TodoCardService todoCardService;
 
-    @PostMapping("/cards/post")
+    @PostMapping("/post")
     public TodoCardResponseDto createTodoCard(@RequestBody TodoCardRequestDto requestDto, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
         return todoCardService.createTodoCard(requestDto,tokenValue);
     }
 
-    @GetMapping("/auth/get-card/{todoID}")
+    @GetMapping("/{todoID}")
     public TodoCardResponseDto getTodoCard(@PathVariable Long todoID) {
         return todoCardService.getTodoCard(todoID);
     }
 
-    @GetMapping("/auth/list")
+    @GetMapping("/list")
     public List<TodoCardListResponseDto> getTodoCardList() {
         return todoCardService.getTodoCardList();
     }
 
-    @PatchMapping("/cards/{cardid}")
-    public String updateTodoCard(@PathVariable Long cardid, @RequestBody TodoCardRequestDto requestDto, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
+    @PatchMapping("/{cardid}")
+    public TodoCardResponseDto updateTodoCard(@PathVariable Long cardid, @RequestBody TodoCardRequestDto requestDto, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
         return todoCardService.updateTodoCard(cardid, requestDto, tokenValue);
     }
 
-    @PatchMapping("/cards/{cardid}/{isdone}")
-    public String completeTodoCard(@PathVariable Long cardid, @PathVariable Boolean isdone, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
+    @PatchMapping("/{cardid}/{isdone}")
+    public TodoCardResponseDto completeTodoCard(@PathVariable Long cardid, @PathVariable Boolean isdone, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
         return todoCardService.updateIsDone(cardid, isdone, tokenValue);
     }
 

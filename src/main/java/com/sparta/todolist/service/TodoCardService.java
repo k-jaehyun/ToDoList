@@ -13,7 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -36,33 +39,46 @@ public class TodoCardService {
     }
 
     public TodoCardResponseDto getTodoCard(Long id) {
-        System.out.println("getTodoCard");
         return new TodoCardResponseDto(findCard(id));
     }
 
     private TodoCard findCard(Long id) {
-        System.out.println("findCard");
         return todoCardRepository.findById(id).orElseThrow(()->new IllegalArgumentException("선택한 할일카드가 존재하지 않습니다."));
     }
 
 
     public List<TodoCardListResponseDto> getTodoCardList() {
-        return todoCardRepository.findAllByOrderByCreatedAtDesc().stream().map(TodoCardListResponseDto::new).toList();
+        Map<User,List<TodoCardResponseDto>> userTodoCardsMap = new HashMap<>();
+        todoCardRepository.findAllByOrderByCreatedAtDesc().stream().forEach(
+                a -> {
+                    if (userTodoCardsMap.get(a.getUser()) == null) {
+                        userTodoCardsMap.put(a.getUser(),new ArrayList<>(List.of(new TodoCardResponseDto(a))));
+                    } else {
+                        userTodoCardsMap.get(a.getUser()).add(new TodoCardResponseDto(a));
+                    }
+                }
+        );
+
+        List<TodoCardListResponseDto> response = new ArrayList<>();
+
+        userTodoCardsMap.forEach( (key,value) -> response.add(new TodoCardListResponseDto(key.getUsername(), value)));
+
+        return response;
     }
 
     @Transactional
-    public String updateTodoCard(Long cardid, TodoCardRequestDto requestDto, String tokenValue) {
+    public TodoCardResponseDto updateTodoCard(Long cardid, TodoCardRequestDto requestDto, String tokenValue) {
         User user = findUserByToken(tokenValue);
 
         TodoCard todoCard = verifyUser(user,cardid);
 
         todoCard.update(requestDto);
 
-        return "수정 성공";
+        return new TodoCardResponseDto(todoCard);
     }
 
     @Transactional
-    public String updateIsDone(Long cardid,Boolean isdone , String tokenValue) {
+    public TodoCardResponseDto updateIsDone(Long cardid,Boolean isdone , String tokenValue) {
         User user = findUserByToken(tokenValue);
 
         TodoCard todoCard = verifyUser(user,cardid);
@@ -71,7 +87,7 @@ public class TodoCardService {
 
         todoCard.update(todoCardResponseDto);
 
-        return "할일 완료";
+        return new TodoCardResponseDto(todoCard);
     }
 
     public User findUserByToken(String tokenValue) {
