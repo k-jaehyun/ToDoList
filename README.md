@@ -1,10 +1,5 @@
-리드미 올려놨었는데 사라졌네요..!
-
-ERD1
-![image](https://github.com/k-jaehyun/ToDoList/assets/70873780/e895a12e-5c38-41d4-9ef9-fb57b7844f8c)
-
-ERD2
-![image](https://github.com/k-jaehyun/ToDoList/assets/70873780/b6d987e8-07fd-4f56-b576-b60eac3599d7)
+ERD
+![img.png](img.png)
 
 API명세
 
