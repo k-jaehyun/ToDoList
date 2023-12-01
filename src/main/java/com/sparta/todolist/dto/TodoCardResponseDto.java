@@ -1,7 +1,7 @@
 package com.sparta.todolist.dto;
 
+import com.sparta.todolist.entity.Comment;
 import com.sparta.todolist.entity.TodoCard;
-import com.sparta.todolist.entity.TodoCardComment;
 import com.sparta.todolist.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
@@ -24,7 +24,7 @@ public class TodoCardResponseDto {
     private LocalDateTime modifiredAt;
     private Boolean isdone;
 
-    private List<TodoCardComment> todoCardCommentList = new ArrayList<>();
+    private List<Comment> commentList = new ArrayList<>();
 
 
     public TodoCardResponseDto(TodoCard todoCard, String username) {
