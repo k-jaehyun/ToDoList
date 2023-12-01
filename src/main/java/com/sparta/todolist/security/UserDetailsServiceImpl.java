@@ -1,7 +1,7 @@
 package com.sparta.todolist.security;
 
-import com.sparta.todolist.entity.User;
-import com.sparta.todolist.repository.UserRepository;
+import com.sparta.todolist.User.User;
+import com.sparta.todolist.User.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

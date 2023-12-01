@@ -1,6 +1,6 @@
 package com.sparta.todolist.security;
 
-import com.sparta.todolist.entity.User;
+import com.sparta.todolist.User.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
