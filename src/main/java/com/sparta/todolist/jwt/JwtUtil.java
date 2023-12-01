@@ -69,7 +69,7 @@ public class JwtUtil {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);   // 토큰 검증 코드 (위변조 여부, 만료 여부 등 체크 가능)
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
@@ -88,12 +88,12 @@ public class JwtUtil {
     }
 
     public String getTokenFromRequest(HttpServletRequest req) {
-        Cookie[] cookies = req.getCookies();   //여러개 담겨있는 쿠키들을 배열로 가져옴
+        Cookie[] cookies = req.getCookies();
         if(cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
                     try {
-                        return URLDecoder.decode(cookie.getValue(), "UTF-8"); // Encode 되어 넘어간 Value를 다시 Decode 해줘야함
+                        return URLDecoder.decode(cookie.getValue(), "UTF-8");
                     } catch (UnsupportedEncodingException e) {
                         return null;
                     }

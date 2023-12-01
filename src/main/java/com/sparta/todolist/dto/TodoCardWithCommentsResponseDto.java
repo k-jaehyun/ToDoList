@@ -1,15 +1,13 @@
 package com.sparta.todolist.dto;
 
-import com.sparta.todolist.entity.Comment;
 import com.sparta.todolist.entity.TodoCard;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class TodoCardResponseDto {
+public class TodoCardWithCommentsResponseDto {
     private Long id;
     private String title;
     private String content;
@@ -18,9 +16,10 @@ public class TodoCardResponseDto {
     private LocalDateTime modifiredAt;
     private Boolean isdone;
 
-//    private List<Comment> commentList = new ArrayList<>();
+    private List<CommentResponseDto> commentList;
 
-    public TodoCardResponseDto(TodoCard todoCard) {
+
+    public TodoCardWithCommentsResponseDto(TodoCard todoCard, List<CommentResponseDto> commentResponseDtoList) {
         this.id = todoCard.getId();
         this.title=todoCard.getTitle();
         this.content=todoCard.getContent();
@@ -28,12 +27,6 @@ public class TodoCardResponseDto {
         this.createdAt=todoCard.getCreatedAt();
         this.modifiredAt=todoCard.getModifiedAt();
         this.isdone=todoCard.getIsdone();
-//        this.commentList=todoCard.getCommentList();
+        this.commentList=commentResponseDtoList;
     }
-
-    public TodoCardResponseDto(Boolean isdone) {
-        this.isdone=isdone;
-    }
-
-
 }

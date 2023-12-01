@@ -3,6 +3,7 @@ package com.sparta.todolist.controller;
 import com.sparta.todolist.dto.TodoCardListResponseDto;
 import com.sparta.todolist.dto.TodoCardRequestDto;
 import com.sparta.todolist.dto.TodoCardResponseDto;
+import com.sparta.todolist.dto.TodoCardWithCommentsResponseDto;
 import com.sparta.todolist.jwt.JwtUtil;
 import com.sparta.todolist.service.TodoCardService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class TodoCardController {
     }
 
     @GetMapping("/{todoID}")
-    public TodoCardResponseDto getTodoCard(@PathVariable Long todoID) {
+    public TodoCardWithCommentsResponseDto getTodoCard(@PathVariable Long todoID) {
         return todoCardService.getTodoCard(todoID);
     }
 

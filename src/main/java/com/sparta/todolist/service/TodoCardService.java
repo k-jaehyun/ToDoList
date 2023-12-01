@@ -1,11 +1,10 @@
 package com.sparta.todolist.service;
 
-import com.sparta.todolist.dto.TodoCardListResponseDto;
-import com.sparta.todolist.dto.TodoCardRequestDto;
-import com.sparta.todolist.dto.TodoCardResponseDto;
+import com.sparta.todolist.dto.*;
 import com.sparta.todolist.entity.TodoCard;
 import com.sparta.todolist.entity.User;
 import com.sparta.todolist.jwt.JwtUtil;
+import com.sparta.todolist.repository.CommentRepository;
 import com.sparta.todolist.repository.TodoCardRepository;
 import com.sparta.todolist.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -25,6 +24,7 @@ public class TodoCardService {
     private final TodoCardRepository todoCardRepository;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
 
     public TodoCardResponseDto createTodoCard(TodoCardRequestDto requestDto, String tokenValue) {
@@ -35,11 +35,14 @@ public class TodoCardService {
                 new NullPointerException("Not Found User"));
         TodoCard todoCard = todoCardRepository.save((new TodoCard(requestDto,user)));
 
-        return new TodoCardResponseDto(todoCard, user.getUsername());
+        return new TodoCardResponseDto(todoCard);
     }
 
-    public TodoCardResponseDto getTodoCard(Long id) {
-        return new TodoCardResponseDto(findCard(id));
+    public TodoCardWithCommentsResponseDto getTodoCard(Long id) {
+        List<CommentResponseDto> commentResponseDtoList
+                =commentRepository.findAllByTodoCardId(id).stream().map(CommentResponseDto::new).toList();
+
+        return new TodoCardWithCommentsResponseDto(findCard(id), commentResponseDtoList);
     }
 
     private TodoCard findCard(Long id) {

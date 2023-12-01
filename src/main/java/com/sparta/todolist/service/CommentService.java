@@ -1,41 +1,44 @@
-//package com.sparta.todolist.service;
-//
-//import com.sparta.todolist.dto.CommentRequestDto;
-//import com.sparta.todolist.entity.Comment;
-//import com.sparta.todolist.entity.TodoCard;
-//import com.sparta.todolist.entity.TodoCardComment;
-//import com.sparta.todolist.entity.User;
-//import com.sparta.todolist.jwt.JwtUtil;
-//import com.sparta.todolist.repository.CommentRepository;
-//import com.sparta.todolist.repository.TodoCardCommentRepository;
-//import com.sparta.todolist.repository.TodoCardRepository;
-//import com.sparta.todolist.repository.UserRepository;
-//import io.jsonwebtoken.Claims;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import java.util.List;
-//
-//@RequiredArgsConstructor
-//@Service
-//public class CommentService {
-//
-//    private final CommentRepository commentRepository;
-//    private final JwtUtil jwtUtil;
-//    private final UserRepository userRepository;
-//    private final TodoCardRepository todoCardRepository;
-//    private final TodoCardCommentRepository todoCardCommentRepository;
-//    public CommentResponsDto createComment(Long cardId, CommentRequestDto requestDto, String tokenValue) {
-//        User user = validateToken(tokenValue);
-//
-//        TodoCard todoCard = validateCardId(cardId);
-//
-//        Comment comment = commentRepository.save(new Comment(requestDto,user,todoCard));
-//        todoCardCommentRepository.save(new TodoCardComment(todoCard,comment));
-//
-//        return new CommentResponsDto(comment);
-//    }
+package com.sparta.todolist.service;
+
+import com.sparta.todolist.dto.CommentRequestDto;
+import com.sparta.todolist.dto.CommentResponseDto;
+import com.sparta.todolist.dto.TodoCardResponseDto;
+import com.sparta.todolist.dto.TodoCardWithCommentsResponseDto;
+import com.sparta.todolist.entity.Comment;
+import com.sparta.todolist.entity.TodoCard;
+import com.sparta.todolist.entity.User;
+import com.sparta.todolist.jwt.JwtUtil;
+import com.sparta.todolist.repository.CommentRepository;
+import com.sparta.todolist.repository.TodoCardRepository;
+import com.sparta.todolist.repository.UserRepository;
+import io.jsonwebtoken.Claims;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+@Service
+public class CommentService {
+
+    private final CommentRepository commentRepository;
+    private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final TodoCardRepository todoCardRepository;
+
+    public TodoCardWithCommentsResponseDto createComment(Long cardId, CommentRequestDto requestDto, String tokenValue) {
+        User user = validateToken(tokenValue);
+
+        TodoCard todoCard = validateCardId(cardId);
+
+        Comment comment = commentRepository.save(new Comment(requestDto,user,todoCard));
+
+        List<CommentResponseDto> commentResponseDtoList
+                =commentRepository.findAllByTodoCardId(cardId).stream().map(CommentResponseDto::new).toList();
+
+        return new TodoCardWithCommentsResponseDto(comment.getTodoCard(), commentResponseDtoList);
+    }
 //
 //    public List<CommentResponsDto> getCommentList(Long cardId) {
 //        validateCardId(cardId);
@@ -71,15 +74,15 @@
 //        todoCardCommentRepository.delete(todoCardComment);
 //        commentRepository.delete(comment);
 //    }
-//
-//    private TodoCard validateCardId(Long cardId) {
-//        return todoCardRepository.findById(cardId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 cardId입니다."));
-//    }
-//
-//    private User validateToken(String tokenValue) {
-//        String token = jwtUtil.substringToken(tokenValue);
-//        Claims info = jwtUtil.getUserInfoFromToken(token);
-//        return userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
-//                new NullPointerException("Not Found User"));
-//    }
-//}
+
+    private TodoCard validateCardId(Long cardId) {
+        return todoCardRepository.findById(cardId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 cardId입니다."));
+    }
+
+    private User validateToken(String tokenValue) {
+        String token = jwtUtil.substringToken(tokenValue);
+        Claims info = jwtUtil.getUserInfoFromToken(token);
+        return userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
+                new NullPointerException("Not Found User"));
+    }
+}

@@ -6,9 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -20,7 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Slf4j(topic = "JWT 검증 및 인가")
-public class JwtAuthorizationFilter extends OncePerRequestFilter {   //상속 받은 필터가 다름
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
@@ -35,14 +33,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {   //상속 �
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
         String tokenValue = jwtUtil.getTokenFromRequest(req);
+//        if(tokenValue==null) {}  //토큰 오류 처리(1. 쿠키가 없거나, 2. Authorization이란 이름의 쿠키가 있긴한데 URLDecoder로 decode가 안되는 녀석)
 
         if (StringUtils.hasText(tokenValue)) {
-            // JWT 토큰 substring
             tokenValue = jwtUtil.substringToken(tokenValue);
             log.info(tokenValue);
 
             if (!jwtUtil.validateToken(tokenValue)) {
-                log.error("Token Error");  //여기 오류메세지
+                log.error("Token Error");  //여기 오류메세지 받아서 처리 (이미 적혀있음)
 //                HttpStatus.UNAUTHORIZED.value();
                 return;
             }
