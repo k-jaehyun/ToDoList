@@ -6,6 +6,7 @@ import com.sparta.todolist.TodoCard.dto.TodoCardRequestDto;
 import com.sparta.todolist.TodoCard.dto.TodoCardResponseDto;
 import com.sparta.todolist.User.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @Table(name = "todoCard")
 @NoArgsConstructor
+@AllArgsConstructor
 public class TodoCard extends Timestamped {
 
     @Id

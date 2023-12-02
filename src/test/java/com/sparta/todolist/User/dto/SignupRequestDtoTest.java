@@ -13,7 +13,7 @@ class SignupRequestDtoTest {
     private final Validator validator = factory.getValidator();
 
     @Test
-    void 유효한_SignupRequestDto_테스트() {
+    void test_SignupRequestDto_1() {
         // Given
         SignupRequestDto signupRequestDto = new SignupRequestDto("testuser", "testPassword");
 
@@ -24,7 +24,7 @@ class SignupRequestDtoTest {
     }
 
     @Test
-    void 유효하지_않은_SignupRequestDto_테스트() {
+    void test_SignupRequestDto_2() {
         // Given
         SignupRequestDto signupRequestDto = new SignupRequestDto("invalidUser", "short");
 

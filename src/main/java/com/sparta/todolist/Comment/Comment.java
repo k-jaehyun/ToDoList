@@ -5,6 +5,7 @@ import com.sparta.todolist.Timestamped;
 import com.sparta.todolist.TodoCard.TodoCard;
 import com.sparta.todolist.User.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "comment")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Comment extends Timestamped {
 
     @Id
