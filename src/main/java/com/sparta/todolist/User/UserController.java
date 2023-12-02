@@ -5,7 +5,6 @@ import com.sparta.todolist.User.dto.LoginRequestDto;
 import com.sparta.todolist.User.dto.SignupRequestDto;
 import com.sparta.todolist.exception.FieldErrorDto;
 import com.sparta.todolist.exception.FieldErrorException;
-import com.sparta.todolist.exception.FieldErrorResponseDto;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +32,6 @@ public class UserController {
     public ResponseEntity<CommonResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         if(fieldErrors.size() > 0) {
-            for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
-            }
             List<FieldErrorDto> fieldErrorDtoList =fieldErrors.stream().map(FieldErrorDto::new).toList();
             throw new FieldErrorException("허용된 username 또는 password 값이 아닙니다.", HttpStatus.BAD_REQUEST.value(), fieldErrorDtoList);
         }

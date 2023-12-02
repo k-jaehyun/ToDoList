@@ -27,9 +27,9 @@ public class CommentService {
     private final TodoCardRepository todoCardRepository;
 
     public TodoCardWithCommentsResponseDto createComment(Long cardId, CommentRequestDto requestDto, String tokenValue) {
-        User user = validateToken(tokenValue);
+        User user = validateTokenAndGetUser(tokenValue);
 
-        TodoCard todoCard = validateCardId(cardId);
+        TodoCard todoCard = validateCardIdAndGetTodoCard(cardId);
 
         commentRepository.save(new Comment(requestDto,user,todoCard));
 
@@ -37,16 +37,16 @@ public class CommentService {
     }
 
     public List<CommentResponseDto> getCommentList(Long cardId) {
-        validateCardId(cardId);
+        validateCardIdAndGetTodoCard(cardId);
 
         return findCommentResponseDtoByCardId(cardId);
     }
 
     @Transactional
     public List<CommentResponseDto> updateComment(Long cardId, Long commentId, String tokenValue, CommentRequestDto requestDto) {
-        User user = validateToken(tokenValue);
-        TodoCard todoCard = validateCardId(cardId);
-        Comment comment = validateCommentId(commentId);
+        User user = validateTokenAndGetUser(tokenValue);
+        TodoCard todoCard = validateCardIdAndGetTodoCard(cardId);
+        Comment comment = validateCommentIdAndGetComment(commentId);
         validateCommentUser(comment,user);
 
         comment.update(requestDto);
@@ -56,9 +56,9 @@ public class CommentService {
 
 
     public TodoCardWithCommentsResponseDto deleteComment(Long cardId, Long commentId, String tokenValue) {
-        User user = validateToken(tokenValue);
-        TodoCard todoCard = validateCardId(cardId);
-        Comment comment = validateCommentId(commentId);
+        User user = validateTokenAndGetUser(tokenValue);
+        TodoCard todoCard = validateCardIdAndGetTodoCard(cardId);
+        Comment comment = validateCommentIdAndGetComment(commentId);
         validateCommentUser(comment,user);
 
         commentRepository.delete(comment);
@@ -67,11 +67,11 @@ public class CommentService {
     }
 
 
-    private TodoCard validateCardId(Long cardId) {
+    private TodoCard validateCardIdAndGetTodoCard(Long cardId) {
         return todoCardRepository.findById(cardId).orElseThrow(()-> new NoSuchElementException("선택한 cardId: ("+cardId+")가 존재하지 않습니다."));
     }
 
-    private User validateToken(String tokenValue) {
+    private User validateTokenAndGetUser(String tokenValue) {
         String token = jwtUtil.substringToken(tokenValue);
         Claims info = jwtUtil.getUserInfoFromToken(token);
         return userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
@@ -82,7 +82,7 @@ public class CommentService {
         return commentRepository.findAllByTodoCardId(cardId).stream().map(CommentResponseDto::new).toList();
     }
 
-    private Comment validateCommentId(Long commentId) {
+    private Comment validateCommentIdAndGetComment(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(()-> new NoSuchElementException("선택한 commentId: ("+commentId+")가 존재하지 않습니다."));
     }
 

@@ -38,7 +38,7 @@ public class TodoCardService {
         List<CommentResponseDto> commentResponseDtoList
                 =commentRepository.findAllByTodoCardId(todoCardId).stream().map(CommentResponseDto::new).toList();
 
-        return new TodoCardWithCommentsResponseDto(findCard(todoCardId), commentResponseDtoList);
+        return new TodoCardWithCommentsResponseDto(findCardById(todoCardId), commentResponseDtoList);
     }
 
 
@@ -66,7 +66,7 @@ public class TodoCardService {
     public TodoCardResponseDto updateTodoCard(Long cardid, TodoCardRequestDto requestDto, String tokenValue) {
         User user = findUserByToken(tokenValue);
 
-        TodoCard todoCard = verifyUser(user,cardid);
+        TodoCard todoCard = verifyUserAndGetTodoCard(user,cardid);
 
         todoCard.update(requestDto);
 
@@ -77,7 +77,7 @@ public class TodoCardService {
     public TodoCardResponseDto updateIsDone(Long cardid,Boolean isdone , String tokenValue) {
         User user = findUserByToken(tokenValue);
 
-        TodoCard todoCard = verifyUser(user,cardid);
+        TodoCard todoCard = verifyUserAndGetTodoCard(user,cardid);
 
         TodoCardResponseDto todoCardResponseDto = new TodoCardResponseDto(isdone);
 
@@ -93,15 +93,15 @@ public class TodoCardService {
                 new UnAuthorizedException("Not Found User From DB By Token"));
     }
 
-    public TodoCard verifyUser(User user, Long cardid) {
-        TodoCard todoCard = findCard(cardid);
+    public TodoCard verifyUserAndGetTodoCard(User user, Long cardid) {
+        TodoCard todoCard = findCardById(cardid);
         if (!todoCard.getUser().getUsername().equals(user.getUsername())) {
             throw new UnAuthorizedException("해당 사용자가 아님.");
         }
         return todoCard;
     }
 
-    private TodoCard findCard(Long cardId) {
+    private TodoCard findCardById(Long cardId) {
         return todoCardRepository.findById(cardId).orElseThrow(()->new NoSuchElementException("선택한 cardId: ("+cardId+")가 존재하지 않습니다."));
     }
 }

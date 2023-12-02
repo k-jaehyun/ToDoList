@@ -47,6 +47,5 @@ public class UserService {
 
         String token = jwtUtil.createToken(user.getUsername());
         jwtUtil.addJwtToCookie(token,res);
-
     }
 }
