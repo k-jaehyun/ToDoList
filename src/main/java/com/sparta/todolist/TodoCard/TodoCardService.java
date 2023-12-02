@@ -6,6 +6,7 @@ import com.sparta.todolist.TodoCard.dto.TodoCardRequestDto;
 import com.sparta.todolist.TodoCard.dto.TodoCardResponseDto;
 import com.sparta.todolist.TodoCard.dto.TodoCardWithCommentsResponseDto;
 import com.sparta.todolist.User.User;
+import com.sparta.todolist.exception.UnAuthorizedException;
 import com.sparta.todolist.jwt.JwtUtil;
 import com.sparta.todolist.Comment.CommentRepository;
 import com.sparta.todolist.User.UserRepository;
@@ -14,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +28,7 @@ public class TodoCardService {
 
 
     public TodoCardResponseDto createTodoCard(TodoCardRequestDto requestDto, String tokenValue) {
-
-        String token = jwtUtil.substringToken(tokenValue);
-        Claims info = jwtUtil.getUserInfoFromToken(token);
-        User user = userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
-                new NullPointerException("Not Found User"));
+        User user = findUserByToken(tokenValue);
         TodoCard todoCard = todoCardRepository.save((new TodoCard(requestDto,user)));
 
         return new TodoCardResponseDto(todoCard);
@@ -47,9 +41,6 @@ public class TodoCardService {
         return new TodoCardWithCommentsResponseDto(findCard(todoCardId), commentResponseDtoList);
     }
 
-    private TodoCard findCard(Long id) {
-        return todoCardRepository.findById(id).orElseThrow(()->new IllegalArgumentException("선택한 할일카드가 존재하지 않습니다."));
-    }
 
 
     public List<TodoCardListResponseDto> getTodoCardList() {
@@ -99,14 +90,18 @@ public class TodoCardService {
         String token = jwtUtil.substringToken(tokenValue);
         Claims info = jwtUtil.getUserInfoFromToken(token);
         return userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
-                new NullPointerException("Not Found User"));
+                new UnAuthorizedException("Not Found User From DB By Token"));
     }
 
     public TodoCard verifyUser(User user, Long cardid) {
-        TodoCard todoCard = todoCardRepository.findById(cardid).orElseThrow(()->new IllegalArgumentException("존재하지 않는 cardid"));
+        TodoCard todoCard = findCard(cardid);
         if (!todoCard.getUser().getUsername().equals(user.getUsername())) {
-            throw new IllegalArgumentException("해당 사용자가 아님.");
+            throw new UnAuthorizedException("해당 사용자가 아님.");
         }
         return todoCard;
+    }
+
+    private TodoCard findCard(Long cardId) {
+        return todoCardRepository.findById(cardId).orElseThrow(()->new NoSuchElementException("선택한 cardId: ("+cardId+")가 존재하지 않습니다."));
     }
 }

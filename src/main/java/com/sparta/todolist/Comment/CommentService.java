@@ -5,6 +5,7 @@ import com.sparta.todolist.Comment.dto.CommentResponseDto;
 import com.sparta.todolist.TodoCard.dto.TodoCardWithCommentsResponseDto;
 import com.sparta.todolist.TodoCard.TodoCard;
 import com.sparta.todolist.User.User;
+import com.sparta.todolist.exception.UnAuthorizedException;
 import com.sparta.todolist.jwt.JwtUtil;
 import com.sparta.todolist.TodoCard.TodoCardRepository;
 import com.sparta.todolist.User.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
@@ -44,10 +46,8 @@ public class CommentService {
     public List<CommentResponseDto> updateComment(Long cardId, Long commentId, String tokenValue, CommentRequestDto requestDto) {
         User user = validateToken(tokenValue);
         TodoCard todoCard = validateCardId(cardId);
-        Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 댓글입니다."));
-        if (!user.getUsername().equals(comment.getUser().getUsername())) {
-            throw new IllegalArgumentException("해당 유저가 아닙니다.");
-        }
+        Comment comment = validateCommentId(commentId);
+        validateCommentUser(comment,user);
 
         comment.update(requestDto);
 
@@ -58,10 +58,8 @@ public class CommentService {
     public TodoCardWithCommentsResponseDto deleteComment(Long cardId, Long commentId, String tokenValue) {
         User user = validateToken(tokenValue);
         TodoCard todoCard = validateCardId(cardId);
-        Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new IllegalArgumentException("commentId를 찾을 수 없습니다."));
-        if(!user.getUsername().equals(todoCard.getUser().getUsername())) {
-            throw new IllegalArgumentException("해당 유저가 아닙니다.");
-        }
+        Comment comment = validateCommentId(commentId);
+        validateCommentUser(comment,user);
 
         commentRepository.delete(comment);
 
@@ -70,17 +68,27 @@ public class CommentService {
 
 
     private TodoCard validateCardId(Long cardId) {
-        return todoCardRepository.findById(cardId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 cardId입니다."));
+        return todoCardRepository.findById(cardId).orElseThrow(()-> new NoSuchElementException("선택한 cardId: ("+cardId+")가 존재하지 않습니다."));
     }
 
     private User validateToken(String tokenValue) {
         String token = jwtUtil.substringToken(tokenValue);
         Claims info = jwtUtil.getUserInfoFromToken(token);
         return userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
-                new NullPointerException("Not Found User"));
+                new UnAuthorizedException("Not Found User From DB By Token"));
     }
 
     private List<CommentResponseDto> findCommentResponseDtoByCardId(Long cardId) {
         return commentRepository.findAllByTodoCardId(cardId).stream().map(CommentResponseDto::new).toList();
+    }
+
+    private Comment validateCommentId(Long commentId) {
+        return commentRepository.findById(commentId).orElseThrow(()-> new NoSuchElementException("선택한 commentId: ("+commentId+")가 존재하지 않습니다."));
+    }
+
+    private void validateCommentUser(Comment comment, User user) {
+        if (!user.getUsername().equals(comment.getUser().getUsername())) {
+            throw new UnAuthorizedException("해당 유저가 아닙니다.");
+        }
     }
 }
