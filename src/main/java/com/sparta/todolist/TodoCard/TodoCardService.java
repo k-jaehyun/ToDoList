@@ -40,11 +40,11 @@ public class TodoCardService {
         return new TodoCardResponseDto(todoCard);
     }
 
-    public TodoCardWithCommentsResponseDto getTodoCard(Long id) {
+    public TodoCardWithCommentsResponseDto getTodoCard(Long todoCardId) {
         List<CommentResponseDto> commentResponseDtoList
-                =commentRepository.findAllByTodoCardId(id).stream().map(CommentResponseDto::new).toList();
+                =commentRepository.findAllByTodoCardId(todoCardId).stream().map(CommentResponseDto::new).toList();
 
-        return new TodoCardWithCommentsResponseDto(findCard(id), commentResponseDtoList);
+        return new TodoCardWithCommentsResponseDto(findCard(todoCardId), commentResponseDtoList);
     }
 
     private TodoCard findCard(Long id) {

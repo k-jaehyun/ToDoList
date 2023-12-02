@@ -22,9 +22,9 @@ public class TodoCardController {
         return todoCardService.createTodoCard(requestDto,tokenValue);
     }
 
-    @GetMapping("/{todoID}")
-    public TodoCardWithCommentsResponseDto getTodoCard(@PathVariable Long todoID) {
-        return todoCardService.getTodoCard(todoID);
+    @GetMapping("/{cardId}")
+    public TodoCardWithCommentsResponseDto getTodoCard(@PathVariable Long cardId) {
+        return todoCardService.getTodoCard(cardId);
     }
 
     @GetMapping("/list")

@@ -40,9 +40,9 @@ public class JwtUtil {
     public String createToken(String username) {
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(username) // 사용자 식별자값(ID)
-                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
-                        .compact();
+                        .setSubject(username)
+                        .signWith(key, signatureAlgorithm)
+                        .compact(); // 불편해서 만료시간은 일부러 뺐습니다
     }
 
     public void addJwtToCookie(String token, HttpServletResponse res) {
