@@ -2,12 +2,13 @@ package com.sparta.todolist.User.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class SignupRequestDto {
     @NotBlank
     @Pattern(regexp = "^[a-z0-9]{4,10}$")
