@@ -32,8 +32,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 new FieldErrorResponseDto(
                         ex.getMessage(),
-                        ex.getFieldErrorResponseDto().getStatusCode(),
-                        ex.getFieldErrorResponseDto().getFieldError()
+                        ex.getStatusCode(),
+                        ex.getFieldErrorDtoList()
                 ));
     }
 }

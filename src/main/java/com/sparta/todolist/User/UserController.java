@@ -37,7 +37,7 @@ public class UserController {
                 log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
             }
             List<FieldErrorDto> fieldErrorDtoList =fieldErrors.stream().map(FieldErrorDto::new).toList();
-            throw new FieldErrorException(new FieldErrorResponseDto("허용된 username 또는 password 값이 아닙니다.", HttpStatus.BAD_REQUEST.value(), fieldErrorDtoList));
+            throw new FieldErrorException("허용된 username 또는 password 값이 아닙니다.", HttpStatus.BAD_REQUEST.value(), fieldErrorDtoList);
         }
 
         try {
