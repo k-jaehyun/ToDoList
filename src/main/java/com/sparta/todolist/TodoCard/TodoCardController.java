@@ -5,7 +5,9 @@ import com.sparta.todolist.TodoCard.dto.TodoCardRequestDto;
 import com.sparta.todolist.TodoCard.dto.TodoCardResponseDto;
 import com.sparta.todolist.TodoCard.dto.TodoCardWithCommentsResponseDto;
 import com.sparta.todolist.jwt.JwtUtil;
+import com.sparta.todolist.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +20,8 @@ public class TodoCardController {
     private final TodoCardService todoCardService;
 
     @PostMapping("/post")
-    public TodoCardResponseDto createTodoCard(@RequestBody TodoCardRequestDto requestDto, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
-        return todoCardService.createTodoCard(requestDto,tokenValue);
+    public TodoCardResponseDto createTodoCard(@RequestBody TodoCardRequestDto requestDto, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return todoCardService.createTodoCard(requestDto,tokenValue, userDetails);
     }
 
     @GetMapping("/{cardId}")

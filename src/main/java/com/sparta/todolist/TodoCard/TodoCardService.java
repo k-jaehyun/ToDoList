@@ -10,6 +10,7 @@ import com.sparta.todolist.exception.UnAuthorizedException;
 import com.sparta.todolist.jwt.JwtUtil;
 import com.sparta.todolist.Comment.CommentRepository;
 import com.sparta.todolist.User.UserRepository;
+import com.sparta.todolist.security.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,9 @@ public class TodoCardService {
     private final CommentRepository commentRepository;
 
 
-    public TodoCardResponseDto createTodoCard(TodoCardRequestDto requestDto, String tokenValue) {
-        User user = findUserByToken(tokenValue);
+    public TodoCardResponseDto createTodoCard(TodoCardRequestDto requestDto, String tokenValue, UserDetailsImpl userDetails) {
+//        User user = findUserByToken(tokenValue);
+        User user = userDetails.getUser();
         TodoCard todoCard = todoCardRepository.save((new TodoCard(requestDto,user)));
 
         return new TodoCardResponseDto(todoCard);
