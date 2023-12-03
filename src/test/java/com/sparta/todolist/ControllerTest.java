@@ -10,7 +10,6 @@ import com.sparta.todolist.User.UserController;
 import com.sparta.todolist.User.UserService;
 import com.sparta.todolist.User.dto.LoginRequestDto;
 import com.sparta.todolist.config.WebSecurityConfig;
-import com.sparta.todolist.jwt.JwtUtil;
 import com.sparta.todolist.security.UserDetailsImpl;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +21,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.security.Principal;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -95,7 +96,7 @@ class ControllerTest {
             LoginRequestDto loginRequestDto = new LoginRequestDto(username,password);
 
             // when - then
-            mvc.perform(MockMvcRequestBuilders.post("/api/users/login")
+            mvc.perform(post("/api/users/login")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(loginRequestDto)))
                     .andExpect(status().isCreated())
@@ -112,18 +113,15 @@ class ControllerTest {
 //            signupRequestForm.add("username","user1");
 //            signupRequestForm.add("password","123456789");
 //
-//            MultiValueMap<String, String> commonResponseDto = new LinkedMultiValueMap<>();
-//            commonResponseDto.add("msg","회원가입 성공");
-//            commonResponseDto.add("statusCode","200");
-//
 //            // when - then
 //            mvc.perform(post("/api/users/signup")
-//                            .params(signupRequestForm)
-//                    )
-//                    .andExpect(status().is2xxSuccessful())
-//                    .andReturn().equals(commonResponseDto);
-
-        }
+//                            .params(signupRequestForm))
+//                    .andExpect(status().isCreated())
+//                    .andExpect(jsonPath("$.msg",is("회원가입 성공")))
+//                    .andExpect(jsonPath("$.statusCode",is(HttpStatus.OK.value())))
+//                    .andDo(print());
+//
+//        }
     }
 //    @PostMapping("/signup")
 //    public ResponseEntity<CommonResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
