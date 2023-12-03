@@ -15,12 +15,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.BDDMockito.given;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -42,6 +45,8 @@ class TodoCardServiceTest {
     private TodoCardRequestDto todoCardRequestDto2;
     private User user;
     private User user2;
+    private UserDetailsImpl userDetails;
+    private UserDetailsImpl userDetails2;
 
     @BeforeEach
     void setUp() {
@@ -49,30 +54,24 @@ class TodoCardServiceTest {
         todoCardRequestDto2 = new TodoCardRequestDto("제목2", "내용2");
         user = new User("유저이름", "비밀번호");
         user2 = new User("유저이름2", "비밀번호2");
+        userDetails = new UserDetailsImpl(user);
+        userDetails2 = new UserDetailsImpl(user2);
     }
 
     @Order(1)
     @Test
-    @DisplayName("createTodoCard") //H2 연결하고싶다
+    @DisplayName("createTodoCard")
     void createTodoCard() {
         // given
         TodoCardService todoCardService = new TodoCardService(todoCardRepository,jwtUtil,userRepository,commentRepository);
 
-        String token = jwtUtil.createToken(user.getUsername());  // 왜 애로 하면 토큰 인증이 안될까요 -> 그래서 userDetails에서 받아오긴 했습니다.
-
         UserDetailsImpl userDetails = new UserDetailsImpl(user);
 
-//        //왜 null이 뜨는지...
-//        TodoCard todoCard = new TodoCard(1L, todoCardRequestDto.getTitle(), todoCardRequestDto.getContent(), false,null,user);
-//        given(todoCardRepository.save(new TodoCard(todoCardRequestDto,user))).willReturn(todoCard);
-//        // 생성된 TodoCard 객체를 스텁으로 설정할 때와 테스트에서 저장된 TodoCard 객체를 생성할 때 서로 다른 객체가 사용됨.
-//        // 이것이 Mockito의 PotentialStubbingProblem 예외를 발생시키는 이유
-
-        // 위에 대신 이렇게 설정하면 돌아가긴 하지만...
+        // save를 어떻게 검증하는지 모르겠습니다.
         given(todoCardRepository.save(ArgumentMatchers.any(TodoCard.class))).willReturn(new TodoCard(todoCardRequestDto,user));
 
         // when
-        TodoCardResponseDto result = todoCardService.createTodoCard(todoCardRequestDto,token,userDetails);
+        TodoCardResponseDto result = todoCardService.createTodoCard(todoCardRequestDto,userDetails);
 
         // then
         assertEquals(result.getUsername(),user.getUsername());
@@ -134,8 +133,20 @@ class TodoCardServiceTest {
     }
 
     @Order(4)
-    @Test
+    @Test // 왜 실행이 안되는지 모르겠습니다.
     void updateTodoCard() {
+//        // given
+//        Long cardId = 1L;
+//        TodoCardService todoCardService = new TodoCardService(todoCardRepository,jwtUtil,userRepository,commentRepository);
+//
+//        TodoCard todoCard = new TodoCard(todoCardRequestDto,user);
+//
+//        given(todoCardRepository.findById(cardId)).willReturn(Optional.of(todoCard));
+//        given(todoCardService.verifyUserAndGetTodoCard(user,cardId)).willReturn(todoCard);
+//        // when
+//        TodoCardResponseDto result = todoCardService.updateTodoCard(cardId,todoCardRequestDto,userDetails);
+//        // then
+//        assertEquals(result.getUsername(),user.getUsername());
     }
 
     @Order(5)
@@ -149,13 +160,36 @@ class TodoCardServiceTest {
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class Methods {
         @Order(1)
-        @Test
-        void findUserByToken() {
+        @Test // 왜 실행이 안되는지 모르겠습니다.
+        void findUserByToken() throws UnsupportedEncodingException {
+//            // given
+//            String token = jwtUtil.createToken(user.getUsername());
+//            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
+//            TodoCardService todoCardService = new TodoCardService(todoCardRepository,jwtUtil,userRepository,commentRepository);
+//
+//            // when
+//            User result = todoCardService.findUserByToken(token);
+//
+//            // then
+//            assertEquals(result.getUsername(),user.getUsername());
         }
 
         @Order(2)
         @Test
         void verifyUserAndGetTodoCard() {
+            // given
+            Long cardId = 1L;
+            TodoCard todoCard = new TodoCard(todoCardRequestDto,user);
+            given(todoCardRepository.findById(cardId)).willReturn(Optional.of(todoCard));
+
+            TodoCardService todoCardService = new TodoCardService(todoCardRepository,jwtUtil,userRepository,commentRepository);
+
+            // when
+            TodoCard result = todoCardService.verifyUserAndGetTodoCard(user,cardId);
+
+            // then
+            assertEquals(result.getUser().getUsername(),user.getUsername());
+            assertNotEquals(result.getUser().getUsername(),user2.getUsername());
         }
     }
 }

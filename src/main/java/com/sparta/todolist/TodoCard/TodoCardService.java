@@ -28,8 +28,7 @@ public class TodoCardService {
     private final CommentRepository commentRepository;
 
 
-    public TodoCardResponseDto createTodoCard(TodoCardRequestDto requestDto, String tokenValue, UserDetailsImpl userDetails) {
-//        User user = findUserByToken(tokenValue);
+    public TodoCardResponseDto createTodoCard(TodoCardRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         TodoCard todoCard = todoCardRepository.save((new TodoCard(requestDto,user)));
 
@@ -65,8 +64,8 @@ public class TodoCardService {
     }
 
     @Transactional
-    public TodoCardResponseDto updateTodoCard(Long cardid, TodoCardRequestDto requestDto, String tokenValue) {
-        User user = findUserByToken(tokenValue);
+    public TodoCardResponseDto updateTodoCard(Long cardid, TodoCardRequestDto requestDto, UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
 
         TodoCard todoCard = verifyUserAndGetTodoCard(user,cardid);
 
@@ -76,8 +75,8 @@ public class TodoCardService {
     }
 
     @Transactional
-    public TodoCardResponseDto updateIsDone(Long cardid,Boolean isdone , String tokenValue) {
-        User user = findUserByToken(tokenValue);
+    public TodoCardResponseDto updateIsDone(Long cardid,Boolean isdone , UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
 
         TodoCard todoCard = verifyUserAndGetTodoCard(user,cardid);
 
@@ -89,10 +88,14 @@ public class TodoCardService {
     }
 
     public User findUserByToken(String tokenValue) {
-        String token = jwtUtil.substringToken(tokenValue);
-        Claims info = jwtUtil.getUserInfoFromToken(token);
-        return userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
-                new UnAuthorizedException("Not Found User From DB By Token"));
+        try {
+            String token = jwtUtil.substringToken(tokenValue);
+            Claims info = jwtUtil.getUserInfoFromToken(token);
+            return userRepository.findByUsername(info.getSubject()).orElseThrow(() ->
+                    new UnAuthorizedException("Not Found User From DB By Token"));
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public TodoCard verifyUserAndGetTodoCard(User user, Long cardid) {

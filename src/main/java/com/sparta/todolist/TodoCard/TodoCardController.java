@@ -4,7 +4,6 @@ import com.sparta.todolist.TodoCard.dto.TodoCardListResponseDto;
 import com.sparta.todolist.TodoCard.dto.TodoCardRequestDto;
 import com.sparta.todolist.TodoCard.dto.TodoCardResponseDto;
 import com.sparta.todolist.TodoCard.dto.TodoCardWithCommentsResponseDto;
-import com.sparta.todolist.jwt.JwtUtil;
 import com.sparta.todolist.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,8 +19,8 @@ public class TodoCardController {
     private final TodoCardService todoCardService;
 
     @PostMapping("/post")
-    public TodoCardResponseDto createTodoCard(@RequestBody TodoCardRequestDto requestDto, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return todoCardService.createTodoCard(requestDto,tokenValue, userDetails);
+    public TodoCardResponseDto createTodoCard(@RequestBody TodoCardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return todoCardService.createTodoCard(requestDto, userDetails);
     }
 
     @GetMapping("/{cardId}")
@@ -35,13 +34,13 @@ public class TodoCardController {
     }
 
     @PatchMapping("/{cardid}")
-    public TodoCardResponseDto updateTodoCard(@PathVariable Long cardid, @RequestBody TodoCardRequestDto requestDto, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
-        return todoCardService.updateTodoCard(cardid, requestDto, tokenValue);
+    public TodoCardResponseDto updateTodoCard(@PathVariable Long cardid, @RequestBody TodoCardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return todoCardService.updateTodoCard(cardid, requestDto, userDetails);
     }
 
     @PatchMapping("/{cardid}/{isdone}")
-    public TodoCardResponseDto completeTodoCard(@PathVariable Long cardid, @PathVariable Boolean isdone, @CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue) {
-        return todoCardService.updateIsDone(cardid, isdone, tokenValue);
+    public TodoCardResponseDto completeTodoCard(@PathVariable Long cardid, @PathVariable Boolean isdone, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return todoCardService.updateIsDone(cardid, isdone, userDetails);
     }
 
 }
