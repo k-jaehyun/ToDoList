@@ -2,6 +2,7 @@ package com.sparta.todolist.TodoCard;
 
 import com.sparta.todolist.Comment.Comment;
 import com.sparta.todolist.Comment.CommentRepository;
+import com.sparta.todolist.TodoCard.dto.TodoCardListResponseDto;
 import com.sparta.todolist.TodoCard.dto.TodoCardRequestDto;
 import com.sparta.todolist.TodoCard.dto.TodoCardResponseDto;
 import com.sparta.todolist.TodoCard.dto.TodoCardWithCommentsResponseDto;
@@ -9,21 +10,12 @@ import com.sparta.todolist.User.User;
 import com.sparta.todolist.User.UserRepository;
 import com.sparta.todolist.jwt.JwtUtil;
 import com.sparta.todolist.security.UserDetailsImpl;
-import jakarta.annotation.security.RunAs;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -47,12 +39,16 @@ class TodoCardServiceTest {
     CommentRepository commentRepository;
 
     private TodoCardRequestDto todoCardRequestDto;
+    private TodoCardRequestDto todoCardRequestDto2;
     private User user;
+    private User user2;
 
     @BeforeEach
     void setUp() {
         todoCardRequestDto = new TodoCardRequestDto("제목", "내용");
+        todoCardRequestDto2 = new TodoCardRequestDto("제목2", "내용2");
         user = new User("유저이름", "비밀번호");
+        user2 = new User("유저이름2", "비밀번호2");
     }
 
     @Order(1)
@@ -114,6 +110,27 @@ class TodoCardServiceTest {
     @Order(3)
     @Test
     void getTodoCardList() {
+        // given
+        TodoCard todoCard1 = new TodoCard(todoCardRequestDto, user);
+        TodoCard todoCard2 = new TodoCard(todoCardRequestDto, user2);
+        List<TodoCard> todoCardList = Arrays.asList(todoCard1,todoCard2);
+        given(todoCardRepository.findAllByOrderByCreatedAtDesc()).willReturn(todoCardList);
+
+        TodoCardService todoCardService = new TodoCardService(todoCardRepository,jwtUtil,userRepository,commentRepository);
+
+        // when
+        List<TodoCardListResponseDto> result = todoCardService.getTodoCardList();
+
+        // then
+        assertEquals(2,result.size());
+        assertEquals(result.get(0).getUsername(),user.getUsername());
+        assertEquals(result.get(1).getUsername(),user2.getUsername());
+        assertEquals(1,result.get(0).getEachUsersCardList().size());
+        assertEquals(1,result.get(1).getEachUsersCardList().size());
+        assertEquals(todoCard1.getId(),result.get(0).getEachUsersCardList().get(0).getId());
+        assertEquals(todoCard2.getId(),result.get(1).getEachUsersCardList().get(0).getId());
+        assertEquals(todoCard1.getContent(),result.get(0).getEachUsersCardList().get(0).getContent());
+        assertEquals(todoCard2.getContent(),result.get(1).getEachUsersCardList().get(0).getContent());
     }
 
     @Order(4)
