@@ -93,67 +93,57 @@ class ControllerTest {
             // given
             String username = "testUser";
             String password = "testPassword";
-            LoginRequestDto loginRequestDto = new LoginRequestDto(username,password);
+            LoginRequestDto loginRequestDto = new LoginRequestDto(username, password);
 
             // when - then
             mvc.perform(post("/api/users/login")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(loginRequestDto)))
                     .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.msg",is("로그인 성공")))
-                    .andExpect(jsonPath("$.statusCode",is(HttpStatus.OK.value())))
+                    .andExpect(jsonPath("$.msg", is("로그인 성공")))
+                    .andExpect(jsonPath("$.statusCode", is(HttpStatus.OK.value())))
                     .andDo(print());
         }
 
         @Order(2)
         @Test
-        @DisplayName("signupTest")
+        @DisplayName("signupTest")  // 강의랑 똑같이 했는데 이건 왜 안될까요
         void signup() throws Exception {
-//            MultiValueMap<String, String> signupRequestForm = new LinkedMultiValueMap<>();
-//            signupRequestForm.add("username","user1");
-//            signupRequestForm.add("password","123456789");
-//
-//            // when - then
-//            mvc.perform(post("/api/users/signup")
-//                            .params(signupRequestForm))
-//                    .andExpect(status().isCreated())
-//                    .andExpect(jsonPath("$.msg",is("회원가입 성공")))
-//                    .andExpect(jsonPath("$.statusCode",is(HttpStatus.OK.value())))
-//                    .andDo(print());
-//
-//        }
-    }
-//    @PostMapping("/signup")
-//    public ResponseEntity<CommonResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
-//        try {
-//            userService.signup(requestDto);
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.badRequest().body(new CommonResponseDto(e.getMessage(),HttpStatus.BAD_REQUEST.value()));
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.CREATED.value()).body(new CommonResponseDto("회원가입 성공",HttpStatus.OK.value()));
-//    }
+            MultiValueMap<String, String> signupRequestForm = new LinkedMultiValueMap<>();
+            signupRequestForm.add("username","user1");
+            signupRequestForm.add("password","123456789");
 
+            // when - then
+            mvc.perform(post("/api/users/signup")
+                            .params(signupRequestForm))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.msg",is("회원가입 성공")))
+                    .andExpect(jsonPath("$.statusCode",is(HttpStatus.OK.value())))
+                    .andDo(print());
 
-    @Test
-    void createTodoCard() throws Exception {
-        // when - then
+        }
     }
 
 
-    @Test
-    void getTodoCard() {
-    }
+        @Test
+        void createTodoCard() throws Exception {
+            // when - then
+        }
 
-    @Test
-    void getTodoCardList() {
-    }
 
-    @Test
-    void updateTodoCard() {
-    }
+        @Test
+        void getTodoCard() {
+        }
 
-    @Test
-    void completeTodoCard() {
+        @Test
+        void getTodoCardList() {
+        }
+
+        @Test
+        void updateTodoCard() {
+        }
+
+        @Test
+        void completeTodoCard() {
+        }
     }
-}
