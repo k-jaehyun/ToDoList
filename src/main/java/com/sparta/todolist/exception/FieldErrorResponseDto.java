@@ -1,19 +1,17 @@
 package com.sparta.todolist.exception;
 
+import com.sparta.todolist.CommonResponseDto;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-public class FieldErrorResponseDto {
-    private String msg;
-    private Integer statusCode;
+public class FieldErrorResponseDto extends CommonResponseDto {
     private List<FieldErrorDto> fieldError;
 
 
     public FieldErrorResponseDto(String msg, int statusCode, List<FieldErrorDto> fieldErrorDtoList) {
-        this.msg=msg;
-        this.statusCode=statusCode;
+        super(msg,statusCode);
         this.fieldError=fieldErrorDtoList;
     }
 }
