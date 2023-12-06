@@ -15,9 +15,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +25,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
@@ -135,18 +137,24 @@ class TodoCardServiceTest {
     @Order(4)
     @Test // 왜 실행이 안되는지 모르겠습니다.
     void updateTodoCard() {
-//        // given
-//        Long cardId = 1L;
-//        TodoCardService todoCardService = new TodoCardService(todoCardRepository,jwtUtil,userRepository,commentRepository);
-//
-//        TodoCard todoCard = new TodoCard(todoCardRequestDto,user);
-//
+        // given
+        jwtUtil.init();
+        Long cardId = 1L;
+        TodoCardService todoCardService = new TodoCardService(todoCardRepository,jwtUtil,userRepository,commentRepository);
+
+        TodoCard todoCard = new TodoCard(todoCardRequestDto,user);
+
+//        when(todoCardRepository.findById(cardId)).thenReturn(Optional.of(todoCard));
+//        when(todoCardService.findCardById(cardId)).thenReturn(todoCard);
+//        when(todoCardService.verifyUserAndGetTodoCard(user,cardId)).thenReturn(todoCard);
+//        doReturn(todoCard).when(todoCardService).verifyUserAndGetTodoCard(user,cardId);
 //        given(todoCardRepository.findById(cardId)).willReturn(Optional.of(todoCard));
-//        given(todoCardService.verifyUserAndGetTodoCard(user,cardId)).willReturn(todoCard);
-//        // when
-//        TodoCardResponseDto result = todoCardService.updateTodoCard(cardId,todoCardRequestDto,userDetails);
-//        // then
-//        assertEquals(result.getUsername(),user.getUsername());
+        given(todoCardService.verifyUserAndGetTodoCard(user,cardId)).willReturn(todoCard);
+
+        // when
+        TodoCardResponseDto result = todoCardService.updateTodoCard(cardId,todoCardRequestDto,userDetails);
+        // then
+        assertEquals(result.getUsername(),user.getUsername());
     }
 
     @Order(5)
@@ -159,20 +167,6 @@ class TodoCardServiceTest {
     @DisplayName("methods test")
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class Methods {
-        @Order(1)
-        @Test // 왜 실행이 안되는지 모르겠습니다.
-        void findUserByToken() throws UnsupportedEncodingException {
-//            // given
-//            String token = jwtUtil.createToken(user.getUsername());
-//            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
-//            TodoCardService todoCardService = new TodoCardService(todoCardRepository,jwtUtil,userRepository,commentRepository);
-//
-//            // when
-//            User result = todoCardService.findUserByToken(token);
-//
-//            // then
-//            assertEquals(result.getUsername(),user.getUsername());
-        }
 
         @Order(2)
         @Test

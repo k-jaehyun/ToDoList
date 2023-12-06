@@ -106,7 +106,7 @@ public class TodoCardService {
         return todoCard;
     }
 
-    private TodoCard findCardById(Long cardId) {
+    public TodoCard findCardById(Long cardId) {
         return todoCardRepository.findById(cardId).orElseThrow(()->new NoSuchElementException("선택한 cardId: ("+cardId+")가 존재하지 않습니다."));
     }
 }
